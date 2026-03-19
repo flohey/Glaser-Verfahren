@@ -37,17 +37,7 @@ pip install -r requirements.txt
 streamlit run glaser_verfahren.py
 ```
 
-## requirements.txt
+## Web-Link
+Die App bereits ist in der [Streamlit Community Cloud](https://glaser-verfahren.streamlit.app/) deployed.
 
-```
-streamlit
-numpy
-matplotlib
-pandas
-astropy
-openpyxl
-```
 
-## Deployment
-
-Die App lässt sich direkt über die [Streamlit Community Cloud](https://share.streamlit.io) deployen – GitHub-Repository verbinden, `glaser_verfahren.py` als Einstiegspunkt auswählen, fertig.
