@@ -3,5 +3,4 @@ numpy
 matplotlib
 pandas
 astropy
-io
 openpyxl
