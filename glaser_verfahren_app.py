@@ -262,8 +262,13 @@ with st.sidebar:
     rH_inside  = st.number_input("Relative Feuchte innen [%]", value=50.0,
                                   min_value=0.0, max_value=100.0, step=1.0, format="%.0f")
 
+    st.markdown('<div class="section-head">Innenklima</div>', unsafe_allow_html=True)
+    R_se  = st.number_input("R_se Oberflächenwiderstand (s. DIN 4108-4) [m2K/W]", value=0.04,min_value=0.0, max_value=10.0, step=0.001, format="%.3f")
+    R_si  = st.number_input("R_si Oberflächenwiderstand (s. DIN 4108-4) [m2K/W]", value=0.13,min_value=0.0, max_value=10.0, step=0.001, format="%.3f")
+
+
     st.markdown("---")
-    st.markdown("**Hinweis:** Oberflächenwiderstände nach DIN 4108-4:  \nR_si = 0.13, R_se = 0.04 m²K/W")
+    st.markdown("**Hinweis:** Oberflächenwiderstände nach :  \nR_si = 0.13, R_se = 0.04 m²K/W")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN – Schichtaufbau
@@ -310,13 +315,15 @@ layer_objects = [Layer(row[0], row[1] * u.mm, row[2] * u.W / u.m / u.K, row[3] *
 # Klima-Einheiten
 T_ext_K = (T_outside_C + 273.15) * u.K
 T_in_K  = (T_inside_C  + 273.15) * u.K
-R_si    = 0.13 * u.m**2 * u.K / u.W
-R_se    = 0.04 * u.m**2 * u.K / u.W
+R_si    = R_si * u.m**2 * u.K / u.W #0.13 * u.m**2 * u.K / u.W
+R_se    = R_se * u.m**2 * u.K / u.W #0.04 * u.m**2 * u.K / u.W
 phi_ext = (rH_outside / 100.0) * u.one
 phi_in  = (rH_inside  / 100.0) * u.one
 
 glaser = Glaser(layer_objects, T_in_K, T_ext_K, R_si, R_se, phi_in, phi_ext)
 T_array, p_sat_array, p_ext, p_in = glaser.compute_results()
+
+mu_arr = np.array([row[3] for row in st.session_state.layers])
 
 
 # Schichtgrenzen: n+3 Punkte, x = 0 … d_gesamt
@@ -432,8 +439,8 @@ for row in st.session_state.layers:
     wall_x.append(wall_x[-1] + row[1])
 
 
-x_arr  = np.array([-offset] + wall_x + [wall_x[-1] + offset])         # x für Temperaturkurve: n+3 Punkte  (Luftpunkt außen + Wand + Luftpunkt innen)
-x_wall = np.array(wall_x)                                             # x für Ticks
+#x_arr  = np.array([-offset] + wall_x + [wall_x[-1] + offset])         # x für Temperaturkurve: n+3 Punkte  (Luftpunkt außen + Wand + Luftpunkt innen)
+#x_wall = np.array(wall_x)                                             # x für Ticks: pos. der Schichten
 
 T_arr  = np.array(temperatures)     # n+3 Werte
 p_arr  = np.array(vapor_pressures)  # n+3 Werte
